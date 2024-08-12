@@ -19,7 +19,6 @@ mod transfer;
 mod utils;
 
 use std::{sync::Arc, sync::RwLock};
-use std::sync::Arc;
 use futures::StreamExt;
 use tokio_tungstenite::connect_async;
 use tokio_tungstenite::tungstenite::protocol::Message;
