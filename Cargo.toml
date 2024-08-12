@@ -11,7 +11,7 @@ readme = "./README.md"
 keywords = ["solana", "crypto", "mining"]
 
 [[bin]]
-name = "coal"
+name = "coal-cli"
 path = "src/main.rs"
 
 [features]
