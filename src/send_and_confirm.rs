@@ -1,7 +1,9 @@
-use std::time::Duration;
+use std::{str::FromStr, time::Duration};
 
 use chrono::Local;
 use colored::*;
+use indicatif::ProgressBar;
+use rand::seq::SliceRandom;
 use solana_client::{
     client_error::{ClientError, ClientErrorKind, Result as ClientResult},
     rpc_config::RpcSendTransactionConfig,
@@ -9,6 +11,8 @@ use solana_client::{
 use solana_program::{
     instruction::Instruction,
     native_token::{lamports_to_sol, sol_to_lamports},
+    pubkey::Pubkey,
+    system_instruction::transfer,
 };
 use solana_rpc_client::spinner;
 use solana_sdk::{
@@ -19,9 +23,10 @@ use solana_sdk::{
 };
 use solana_transaction_status::{TransactionConfirmationStatus, UiTransactionEncoding};
 
+use crate::utils::get_latest_blockhash_with_retries;
 use crate::Miner;
 
-const MIN_SOL_BALANCE: f64 = 0.005;
+const MIN_SOL_BALANCE: f64 = 0.0005;
 
 const RPC_RETRIES: usize = 0;
 const _SIMULATION_RETRIES: usize = 4;
@@ -32,6 +37,7 @@ const CONFIRM_DELAY: u64 = 500;
 const GATEWAY_DELAY: u64 = 0; //300;
 
 pub enum ComputeBudget {
+    #[allow(dead_code)]
     Dynamic,
     Fixed(u32),
 }
@@ -43,9 +49,11 @@ impl Miner {
         compute_budget: ComputeBudget,
         skip_confirm: bool,
     ) -> ClientResult<Signature> {
+        let progress_bar = spinner::new_progress_bar();
         let signer = self.signer();
         let client = self.rpc_client.clone();
         let fee_payer = self.fee_payer();
+        let mut send_client = self.rpc_client.clone();
 
         // Return error, if balance is zero
         self.check_balance().await;
@@ -109,7 +117,6 @@ impl Miner {
         let mut tx = Transaction::new_with_payer(&final_ixs, Some(&fee_payer.pubkey()));
 
         // Submit tx
-        let progress_bar = spinner::new_progress_bar();
         let mut attempts = 0;
         loop {
             progress_bar.set_message(format!("Submitting transaction... (attempt {})", attempts,));
@@ -153,6 +160,7 @@ impl Miner {
             }
 
             // Send transaction
+            attempts += 1;
             match client.send_transaction_with_config(&tx, send_cfg).await {
                 Ok(sig) => {
                     // Skip confirmation
