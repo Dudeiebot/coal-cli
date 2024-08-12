@@ -67,7 +67,7 @@ pub async fn get_clock(client: &RpcClient) -> Clock {
         .get_account_data(&sysvar::clock::ID)
         .await
         .expect("Failed to get clock account");
-    bincode::Deserialize::<Clock>(&data).expect("Failed to deserialize clock")
+    bincode::deserialize::<Clock>(&data).expect("Failed to deserialize clock")
 }
 
 pub fn amount_u64_to_string(amount: u64) -> String {
