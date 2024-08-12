@@ -11,7 +11,7 @@ use solana_program::{
     instruction::Instruction,
     native_token::{lamports_to_sol, sol_to_lamports},
     pubkey::Pubkey,
-    system_instruction::transfer,
+    system_instruction::transfer, pubkey::Pubkey,
 };
 use solana_rpc_client::spinner;
 use solana_sdk::{
@@ -160,7 +160,8 @@ impl Miner {
 
             // Send transaction
             attempts += 1;
-            match client.send_transaction_with_config(&tx, send_cfg).await {
+            match 
+            send_client.send_transaction_with_config(&tx, send_cfg).await {
                 Ok(sig) => {
                     // Skip confirmation
                     if skip_confirm {
