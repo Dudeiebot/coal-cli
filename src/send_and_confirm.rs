@@ -22,7 +22,7 @@ use solana_sdk::{
 };
 use solana_transaction_status::{TransactionConfirmationStatus, UiTransactionEncoding};
 
-use crate::utils::get_latest_blockhash_with_retries;
+
 use crate::Miner;
 
 const MIN_SOL_BALANCE: f64 = 0.0005;
