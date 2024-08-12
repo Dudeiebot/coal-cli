@@ -8,7 +8,6 @@ use coal_api::{
     state::{Config, Proof, Treasury},
 };
 use coal_utils::AccountDeserialize;
-use serde::Deserialize;
 use solana_client::client_error::{ClientError, ClientErrorKind};
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_program::{pubkey::Pubkey, sysvar};
@@ -136,7 +135,7 @@ pub fn treasury_tokens_pubkey() -> Pubkey {
     get_associated_token_address(&TREASURY_ADDRESS, &MINT_ADDRESS)
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, deserialize)]
 pub struct Tip {
     pub time: String,
     pub landed_tips_25th_percentile: f64,
