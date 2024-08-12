@@ -17,8 +17,8 @@ mod send_and_confirm;
 mod stake;
 mod transfer;
 mod utils;
-mod upgrade;
 
+use std::{sync::Arc, sync::RwLock};
 use std::sync::Arc;
 use futures::StreamExt;
 use tokio_tungstenite::connect_async;
