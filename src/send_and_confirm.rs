@@ -11,8 +11,7 @@ use solana_program::{
     instruction::Instruction,
     native_token::{lamports_to_sol, sol_to_lamports},
     pubkey::Pubkey,
-    system_instruction::transfer, pubkey::Pubkey,
-};
+    system_instruction::transfer,
 use solana_rpc_client::spinner;
 use solana_sdk::{
     commitment_config::CommitmentLevel,
