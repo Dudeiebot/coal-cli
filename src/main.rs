@@ -17,8 +17,12 @@ mod send_and_confirm;
 mod stake;
 mod transfer;
 mod utils;
+mod upgrade;
 
 use std::sync::Arc;
+use futures::StreamExt;
+use tokio_tungstenite::connect_async;
+use tokio_tungstenite::tungstenite::protocol::Message;
 
 use args::*;
 use clap::{command, Parser, Subcommand};
@@ -27,6 +31,7 @@ use solana_sdk::{
     commitment_config::CommitmentConfig,
     signature::{read_keypair_file, Keypair},
 };
+use utils::Tip;
 
 struct Miner {
     pub keypair_filepath: Option<String>,
@@ -36,6 +41,7 @@ struct Miner {
     pub rpc_client: Arc<RpcClient>,
     pub fee_payer_filepath: Option<String>,
     pub jito_client: Arc<RpcClient>,
+    pub tip: Arc<std::sync::RwLock<u64>>,
 }
 
 #[derive(Subcommand, Debug)]
